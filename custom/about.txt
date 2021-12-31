@@ -1,0 +1,5 @@
+<p style="white-space: pre-line;">KR34T3 is a free and open-source release-system.
+
+Created by saintly2k, it was never used by anyone except H33T Fansub.
+
+Find it on <a href="https://github.com/H33Tx/KR34T3" target="_blank">https://github.com/H33Tx/KR34T3</a></p>
