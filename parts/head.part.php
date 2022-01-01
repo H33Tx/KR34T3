@@ -4,4 +4,4 @@
 
 <title><?= $title ?> -=- <?= $name ?></title>
 
-<link href="assets/css/style.css" type="text/css" rel="stylesheet">
+<link href="https://saintly2k.github.io/saintly2k/cnd/css/KR34T3.css" type="text/css" rel="stylesheet">

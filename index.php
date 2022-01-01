@@ -2,8 +2,10 @@
 
 session_start();
 
-require_once("core/config.inc.php");
-require_once("language/".$config["general"]["lang"].".lang.php");
+if(file_exists("installed")) {
+    require_once("core/config.inc.php");
+    require_once("language/".$config["general"]["lang"].".lang.php");
+}
 require_once("core/doraemon.inc.php");
 require_once("core/daemon.inc.php");
 require_once("core/functions.inc.php");

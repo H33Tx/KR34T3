@@ -96,7 +96,7 @@ header("location: ../");
 
     <title>Installation -=- KR34T3-Release-System</title>
 
-    <link href="../assets/css/style.css" type="text/css" rel="stylesheet">
+    <link href="https://saintly2k.github.io/saintly2k/cnd/css/KR34T3.css" type="text/css" rel="stylesheet">
 </head>
 
 <body style="background-color:grey;color:#fff;padding-top:20px">
