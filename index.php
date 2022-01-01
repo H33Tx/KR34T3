@@ -1,8 +1,12 @@
 <?php
 
+session_start();
+
 require_once("core/config.inc.php");
 require_once("language/".$config["general"]["lang"].".lang.php");
 require_once("core/doraemon.inc.php");
+require_once("core/daemon.inc.php");
+require_once("core/functions.inc.php");
 
 ?>
 
@@ -35,7 +39,15 @@ require_once("core/doraemon.inc.php");
                         <a type="button" class="nes-btn is-primary" style="width:100%" href="?page=recent&pagination=1">Recent</a>
                         <a type="button" class="nes-btn is-primary" style="width:100%" href="?page=search&act=home">Search</a>
                         <a type="button" class="nes-btn is-primary" style="width:100%" href="?page=about">About</a>
-                        <a type="button" class="nes-btn is-primary" style="width:100%" href="?page=admin&act=home">Admin</a>
+                        <a type="button" class="nes-btn is-success" style="width:100%" href="?page=admin&act=home">Admin</a>
+                        <?php if(!empty($_COOKIE["loggedincookie"])) { ?>
+                        <a type="button" class="nes-btn is-info" style="width:100%" href="?page=admin&act=settings">Main</a>
+                        <a type="button" class="nes-btn is-info" style="width:100%" href="?page=admin&act=users">User</a>
+                        <a type="button" class="nes-btn is-info" style="width:100%" href="?page=admin&act=new">New</a>
+                        <a type="button" class="nes-btn is-info" style="width:100%" href="?page=admin&act=edit&pagination=1">Edit</a>
+                        <a type="button" class="nes-btn is-info" style="width:100%" href="?page=admin&act=note">Note</a>
+                        <a type="button" class="nes-btn is-error" style="width:100%" href="?page=admin&act=logout">Logout</a>
+                        <?php } ?>
                     </section>
                 </div>
                 <div class="item-2">
