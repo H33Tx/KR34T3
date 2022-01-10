@@ -7,8 +7,6 @@ if(file_exists("installed")) {
     require_once("language/".$config["general"]["lang"].".lang.php");
 }
 require_once("core/doraemon.inc.php");
-require_once("core/daemon.inc.php");
-require_once("core/functions.inc.php");
 
 ?>
 
@@ -19,11 +17,11 @@ require_once("core/functions.inc.php");
     <?php include("parts/head.part.php"); ?>
 </head>
 
-<body style="background-color:grey;color:#fff;padding-top:20px">
+<body style="background-color:black;color:#fff;padding-top:20px" onload="proveHuman()">
+    <div class="nes-container with-title is-centered is-rounded is-dark" id="javascriptChallange"><?= $lang["notice"] ?></div>
     <div class="container">
         <main class="main-content">
-
-            <section class="topic nes-container is-rounded is-dark is-centered">
+            <section id="header-img" class="topic nes-container is-rounded is-dark is-centered">
                 <a href="<?= $url ?>" style="text-decoration: none;">
                     <?php if(file_exists("custom/art.txt")) {
     include("custom/art.txt"); // https://patorjk.com/software/taag/
@@ -37,18 +35,18 @@ require_once("core/functions.inc.php");
             <div class="grid">
                 <div class="item-2">
                     <section class="topic nes-container with-title is-centered is-rounded is-dark">
-                        <p class="title">Menu</p>
-                        <a type="button" class="nes-btn is-primary" style="width:100%" href="?page=recent&pagination=1">Recent</a>
-                        <a type="button" class="nes-btn is-primary" style="width:100%" href="?page=search&act=home">Search</a>
-                        <a type="button" class="nes-btn is-primary" style="width:100%" href="?page=about">About</a>
-                        <a type="button" class="nes-btn is-success" style="width:100%" href="?page=admin&act=home">Admin</a>
-                        <?php if(!empty($_COOKIE["loggedincookie"])) { ?>
-                        <a type="button" class="nes-btn is-info" style="width:100%" href="?page=admin&act=settings">Main</a>
-                        <a type="button" class="nes-btn is-info" style="width:100%" href="?page=admin&act=users">User</a>
-                        <a type="button" class="nes-btn is-info" style="width:100%" href="?page=admin&act=new">New</a>
-                        <a type="button" class="nes-btn is-info" style="width:100%" href="?page=admin&act=edit&pagination=1">Edit</a>
-                        <a type="button" class="nes-btn is-info" style="width:100%" href="?page=admin&act=note">Note</a>
-                        <a type="button" class="nes-btn is-error" style="width:100%" href="?page=admin&act=logout">Logout</a>
+                        <p class="title"><?= $lang["nav"]["menu"] ?></p>
+                        <a type="button" class="nes-btn is-primary" style="width:100%" href="?page=recent&pagination=1"><?= $lang["nav"]["recent"] ?></a>
+                        <a type="button" class="nes-btn is-primary" style="width:100%" href="?page=search&act=home"><?= $lang["nav"]["search"] ?></a>
+                        <a type="button" class="nes-btn is-primary" style="width:100%" href="?page=about"><?= $lang["nav"]["about"] ?></a>
+                        <a type="button" class="nes-btn is-success" style="width:100%" href="?page=admin&act=home"><?= $lang["nav"]["admin"] ?></a>
+                        <?php if($admin==true) { ?>
+                        <a type="button" class="nes-btn is-info" style="width:100%" href="?page=admin&act=settings"><?= $lang["nav"]["main"] ?></a>
+                        <a type="button" class="nes-btn is-info" style="width:100%" href="?page=admin&act=users"><?= $lang["nav"]["user"] ?></a>
+                        <a type="button" class="nes-btn is-info" style="width:100%" href="?page=admin&act=new"><?= $lang["nav"]["new"] ?></a>
+                        <a type="button" class="nes-btn is-info" style="width:100%" href="?page=admin&act=cats"><?= $lang["nav"]["cats"] ?></a>
+                        <a type="button" class="nes-btn is-info" style="width:100%" href="?page=admin&act=note"><?= $lang["nav"]["note"] ?></a>
+                        <a type="button" class="nes-btn is-error" style="width:100%" href="?page=admin&act=logout"><?= $lang["nav"]["logout"] ?></a>
                         <?php } ?>
                     </section>
                 </div>

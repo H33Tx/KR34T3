@@ -1,0 +1,76 @@
+a:hover:before {
+    content: '卐 ';
+    font-size: 16px;
+    color: darkred;
+}
+
+a:hover:after {
+    content: ' 卐';
+    font-size: 16px;
+    color: darkred;
+}
+
+#header-img a:hover:before {
+    content: '';
+}
+
+#header-img a:hover:after {
+    content: 'Mürdoch Mürdoch Edition';
+    transition: .2s;
+}
+
+#header-img a:after {
+    content: "Mürdoch Mürdoch Edition";
+}
+
+.nes-btn:hover:before,
+.nes-btn:hover:after {
+    content: '';
+    font-size: 1px;
+    transition: .2s;
+}
+
+#header-img {
+    background: transparent !important;
+    background-position: center;
+    background-size: cover;
+}
+
+#header-img a {
+    color: black !important;
+    transition: .2s;
+}
+
+#header-img a:hover {
+    color: darkred !important;
+}
+
+body {
+    background: url("../img/murdoch.png");
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.nes-container {
+    background-color: red !important;
+}
+
+p.title {
+    background-color: indianred !important;
+    color: darkred !important;
+}
+
+p.title:before,
+p.title:after {
+    content: '卐';
+    font-size: 16px;
+    color: darkred;
+}
+
+.nes-btn {
+    background-color: darkorange !important;
+}
+
+.nes-table {
+    background-color: red !important;
+}
