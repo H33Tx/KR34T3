@@ -1,0 +1,5 @@
+#header-img {
+    background: url('../img/banner.jpg');
+    background-position: center;
+    background-size: cover;
+}

@@ -27,7 +27,20 @@ if($step=="3") {
     $conn = new mysqli($db_host, $db_user, $db_pass, $db_tale);
     $conn->set_charset("utf8mb4");
     if(!$conn->connect_error) {
-        // Create all stuff etc
+        // Insert data from SQL file to Database
+        // https://stackoverflow.com/questions/19751354/how-do-i-import-a-sql-file-in-mysql-database-using-php Thx!
+        $filename = 'kr34t3.sql';
+        $templine = '';
+        $lines = file($filename);
+        foreach ($lines as $line) {
+            if (substr($line, 0, 2) == '--' || $line == '')continue;
+            $templine .= $line;
+            if (substr(trim($line), -1, 1) == ';') {
+                $conn->query($templine);
+                $templine = '';
+            }
+        }
+        echo "Tables imported successfully! You may continue with the istallation. If the next step errors, please comment on the latest KR34T3 thread on the Leak.to Forums (thread author: saint).";
     }
     $file = fopen("config.inc.php", "a+");
     fwrite($file, "<?php\n\n");
@@ -35,6 +48,7 @@ if($step=="3") {
     fwrite($file, "\$config[\"general\"][\"slogan\"] = \"$cf_slogan\";\n");
     fwrite($file, "\$config[\"general\"][\"url\"] = \"$cf_url\";\n");
     fwrite($file, "\$config[\"general\"][\"folder\"] = \"$cf_sub\";\n");
+    fwrite($file, "\$config[\"general\"][\"murdoch_murdoch\"] = \"0\";\n");
     fwrite($file, "\$config[\"general\"][\"lang\"] = \"$cf_lang\";\n\n");
     fwrite($file, "\$config[\"db\"][\"host\"] = \"$db_host\";\n");
     fwrite($file, "\$config[\"db\"][\"user\"] = \"$db_user\";\n");
@@ -55,6 +69,7 @@ fclose($file);
 $before = "config.inc.php";
 $after = "../core/config.inc.php";
 rename($before, $after);
+chmod($after, 0777);
 }
 
 if($step=="4") {
@@ -70,7 +85,8 @@ $db_tale = $_GET["db_tale"];
 $conn = new mysqli($db_host, $db_user, $db_pass, $db_tale);
 $conn->set_charset("utf8mb4");
 $at_pass = $at_pass1;
-$conn->query("INSERT INTO user(username, password) VALUES('$at_user','$at_pass')");
+$at_pass = hash('sha512', $at_pass);
+$conn->query("INSERT INTO `user`(`username`, `password`) VALUES('$at_user','$at_pass')");
 } else {
 echo "<script>
     history.back()
@@ -81,7 +97,7 @@ echo "<script>
 
 if($step=="5") {
 fopen("../installed", "w");
-header("location: ../");
+header("location: ../index.php?page=admin&act=login");
 }
 
 ?>
@@ -94,9 +110,10 @@ header("location: ../");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
 
-    <title>Installation -=- KR34T3-Release-System</title>
+    <title>Installation: Step <?= $step ?> -=- KR34T3-Release-System</title>
 
     <link href="https://saintly2k.github.io/saintly2k/cnd/css/KR34T3.css" type="text/css" rel="stylesheet">
+    <link href="../assets/css/style.css" type="text/css" rel="stylesheet">
 </head>
 
 <body style="background-color:grey;color:#fff;padding-top:20px">
@@ -124,27 +141,29 @@ header("location: ../");
                 <div class="nes-container is-dark is-rounded with-title">
                     <p class="title">Default Config</p>
                     <div style="background-color:#212529; padding: 1rem;" class="nes-field is-inline">
-                        <label for="cf_title" style="color:#fff;">title</label>
+                        <label for="cf_title" style="color:#fff;">Name</label>
                         <input required type="text" id="cf_title" class="nes-input is-dark" placeholder="KR34T3" name="cf_title">
                     </div>
                     <div style="background-color:#212529; padding: 1rem;" class="nes-field is-inline">
-                        <label for="cf_slogan" style="color:#fff;">slogan</label>
-                        <input type="text" id="cf_slogan" class="nes-input is-dark" placeholder="your own release system" name="cf_slogan">
+                        <label for="cf_slogan" style="color:#fff;">Slogan</label>
+                        <input type="text" id="cf_slogan" class="nes-input is-dark" placeholder="your own release-system" name="cf_slogan">
                     </div>
                     <div style="background-color:#212529; padding: 1rem;" class="nes-field is-inline">
-                        <label for="cf_url" style="color:#fff;">domain</label>
+                        <label for="cf_url" style="color:#fff;">Domain</label>
                         <input required type="text" id="cf_url" class="nes-input is-dark" placeholder="https://kr34t3.url/" name="cf_url">
                     </div>
                     <div style="background-color:#212529; padding: 1rem;" class="nes-field is-inline">
-                        <label for="cf_sub" style="color:#fff;">subfolder</label>
+                        <label for="cf_sub" style="color:#fff;">Folder</label>
                         <input type="text" id="cf_sub" class="nes-input is-dark" placeholder="kr34t3/" name="cf_sub">
                     </div>
                     <div style="background-color:#212529; padding: 1rem 1.2rem 1rem 1rem;width:calc(100% + 8px)">
-                        <label for="cf_lang" style="color:#fff">language</label>
+                        <label for="cf_lang" style="color:#fff">Language</label>
                         <div class="nes-select is-dark">
                             <select required id="cf_lang" name="cf_lang">
                                 <option value="" disabled selected hidden>Select...</option>
-                                <option value="en">english</option>
+                                <option value="de-informal">Deutsch (Du-Form, Informal)</option>
+                                <option value="de-formal">Deutsch (Sie-Form, Formal)</option>
+                                <option value="en-us">English (US)</option>
                             </select>
                         </div>
                     </div>
@@ -153,19 +172,19 @@ header("location: ../");
                 <div class="nes-container is-dark is-rounded with-title">
                     <p class="title">MySQL Database</p>
                     <div style="background-color:#212529; padding: 1rem;" class="nes-field is-inline">
-                        <label for="db_host" style="color:#fff;">host</label>
+                        <label for="db_host" style="color:#fff;">Host</label>
                         <input required type="text" id="db_host" class="nes-input is-dark" placeholder="localhost" name="db_host">
                     </div>
                     <div style="background-color:#212529; padding: 1rem;" class="nes-field is-inline">
-                        <label for="db_user" style="color:#fff;">user</label>
+                        <label for="db_user" style="color:#fff;">User</label>
                         <input required type="text" id="db_user" class="nes-input is-dark" placeholder="root" name="db_user">
                     </div>
                     <div style="background-color:#212529; padding: 1rem;" class="nes-field is-inline">
-                        <label for="db_pass" style="color:#fff;">password</label>
+                        <label for="db_pass" style="color:#fff;">Password</label>
                         <input type="text" id="db_pass" class="nes-input is-dark" placeholder="root" name="db_pass">
                     </div>
                     <div style="background-color:#212529; padding: 1rem;" class="nes-field is-inline">
-                        <label for="db_tale" style="color:#fff;">table</label>
+                        <label for="db_tale" style="color:#fff;">Table</label>
                         <input type="text" id="db_tale" class="nes-input is-dark" placeholder="kr34t3" name="db_tale">
                     </div>
                 </div>
@@ -187,21 +206,21 @@ header("location: ../");
             <?php if(empty($_GET["cf_title"]) || !isset($_GET["cf_title"])) { ?>
             <div class="nes-container is-dark is-error is-rounded with-title">
                 <p class="title">Error</p>
-                <p>if you leave "title" empty, it will result in an error! <button onclick="history.back()" type="button" class="nes-btn is-error">fix this!</button></p>
+                <p>If you leave "Name" empty, it will result in an error! <button onclick="history.back()" type="button" class="nes-btn is-error">Fix this!</button></p>
             </div>
             <?php } ?>
 
             <?php if(empty($_GET["cf_url"]) || !isset($_GET["cf_url"])) { ?>
             <div class="nes-container is-dark is-error is-rounded with-title">
                 <p class="title">Error</p>
-                <p>if you leave "domain" empty, it will result in an error! <button onclick="history.back()" type="button" class="nes-btn is-error">fix this!</button></p>
+                <p>If you leave "Domain" empty, it will result in an error! <button onclick="history.back()" type="button" class="nes-btn is-error">Fix this!</button></p>
             </div>
             <?php } ?>
 
             <?php if(empty($_GET["cf_lang"]) || !isset($_GET["cf_lang"])) { ?>
             <div class="nes-container is-dark is-error is-rounded with-title">
                 <p class="title">Error</p>
-                <p>if you leave "language" empty, it will result in an error! <button onclick="history.back()" type="button" class="nes-btn is-error">fix this!</button></p>
+                <p>If you leave "Language" empty, it will result in an error! <button onclick="history.back()" type="button" class="nes-btn is-error">Fix this!</button></p>
             </div>
             <?php } ?>
 
@@ -209,7 +228,7 @@ header("location: ../");
                 <div class="nes-container is-dark is-rounded with-title">
                     <p class="title">Create Admin</p>
                     <div style="background-color:#212529; padding: 1rem;" class="nes-field is-inline">
-                        <label for="at_user" style="color:#fff;">username</label>
+                        <label for="at_user" style="color:#fff;">Username</label>
                         <input required type="text" name="step" value="4" hidden readonly>
                         <input required type="text" name="db_host" value="<?= $_GET["db_host"] ?>" hidden readonly>
                         <input required type="text" name="db_user" value="<?= $_GET["db_user"] ?>" hidden readonly>
@@ -218,11 +237,11 @@ header("location: ../");
                         <input required type="text" id="at_user" class="nes-input is-dark" placeholder="admin" name="at_user">
                     </div>
                     <div style="background-color:#212529; padding: 1rem;" class="nes-field is-inline">
-                        <label for="at_pass1" style="color:#fff;">password</label>
+                        <label for="at_pass1" style="color:#fff;">Password</label>
                         <input required type="password" id="at_pass1" class="nes-input is-dark" placeholder="c00l_p4ssw0rd_6969" name="at_pass1">
                     </div>
                     <div style="background-color:#212529; padding: 1rem;" class="nes-field is-inline">
-                        <label for="at_pass2" style="color:#fff;">repeat</label>
+                        <label for="at_pass2" style="color:#fff;">Repeat</label>
                         <input required type="password" id="at_pass2" class="nes-input is-dark" placeholder="c00l_p4ssw0rd_6969" name="at_pass2">
                     </div>
                     <input type="submit" class="nes-btn is-primary" style="width:100%" value="Create Account!">
@@ -255,7 +274,7 @@ header("location: ../");
 
             <div class="nes-container is-dark is-error is-rounded with-title">
                 <p class="title">Error</p>
-                <p>Errror establishing a MySQL Connection: <?= $conn->connect_error ?> <button onclick="history.back()" type="button" class="nes-btn is-error">fix this!</button></p>
+                <p>Errror establishing a MySQL Connection: <?= $conn->connect_error ?> <button onclick="history.back()" type="button" class="nes-btn is-error">Fix this!</button></p>
             </div>
 
             <?php } ?>
@@ -264,8 +283,7 @@ header("location: ../");
         </main>
     </div>
     <div class="nes-container is-rounded is-dark is-centered">
-        <span>Copyright &copy; 2021</span>
-        <a href="https://github.com/H33Tx/KR34T3" target="_blank">KR34T3</a> <?php include("../version") ?> by <a href="https://h33t.moe" target="_blank" rel="noopener">@H33Tx</a>
+        Copyright &copy; 2021-2022 Project H33T x HENAI.eu</a>
     </div>
 </body>
 
